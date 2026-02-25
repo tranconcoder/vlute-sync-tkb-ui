@@ -87,6 +87,17 @@ export default function LoginPage() {
               Tiếp tục với Google
             </button>
 
+            <div className="mt-6 flex flex-col items-center">
+              <div className="flex items-start text-sm text-gray-500 bg-gray-50 p-4 rounded-lg border border-gray-100 shadow-sm">
+                <svg className="w-5 h-5 text-amber-500 mr-2 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p>
+                  <span className="font-semibold text-gray-700 block mb-1">Lưu ý quan trọng:</span>
+                  Hệ thống <strong>chỉ cho phép đăng nhập</strong> bằng tài khoản Google do nhà trường cấp.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
