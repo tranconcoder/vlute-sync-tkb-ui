@@ -22,40 +22,27 @@
   --font-mono: ui-monospace, monospace;
 }
 
+/* ─── Native Scroll Snap ─────────────────────────────── */
 @layer base {
   html {
-    scroll-behavior: auto !important;
+    /* Enable full-page smooth scroll snap - proximity is much better UX than mandatory */
+    scroll-snap-type: y proximity;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-be-vietnam), sans-serif;
+    overflow-x: hidden;
+    /* Prevent rubber-band bounce fighting with snap */
+    overscroll-behavior-y: none;
   }
 }
 
-/* Lenis CSS */
-html.lenis,
-html.lenis body {
-  height: auto;
+/* Each top-level snap section */
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: 100dvh; /* dvh = accounts for mobile browser chrome */
 }
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-be-vietnam), sans-serif;
-  overflow-x: hidden;
-  width: 100%;
-  overscroll-behavior: none;
-}
-

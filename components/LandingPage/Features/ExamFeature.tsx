@@ -39,7 +39,7 @@ const examData = [
 
 export default function ExamFeature() {
   return (
-    <section className="min-h-screen w-full flex items-center justify-center bg-gray-50 text-gray-900 relative overflow-hidden">
+    <section className="min-h-[100dvh] w-full flex items-center justify-center bg-gray-50 text-gray-900 snap-section relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-emerald-500/5 -skew-x-12 transform translate-x-1/4" />
       

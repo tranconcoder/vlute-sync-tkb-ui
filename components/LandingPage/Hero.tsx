@@ -30,7 +30,7 @@ const itemVariants = {
 
 export default function Hero() {
   return (
-    <section className="min-h-screen py-20 w-full flex items-center justify-center relative bg-gradient-to-br from-emerald-50 to-white section-snap overflow-hidden">
+    <section className="min-h-[100dvh] py-20 w-full flex items-center justify-center relative bg-gradient-to-br from-emerald-50 to-white snap-section overflow-hidden">
       {/* Background patterns */}
       <div className="absolute inset-0 z-0">
         <motion.div 

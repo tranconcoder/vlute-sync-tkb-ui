@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white border-t border-gray-100 py-12 px-6 section-snap">
+    <footer className="w-full bg-white border-t border-gray-100 py-12 px-6 snap-end">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         <div>
           <div className="font-bold text-2xl text-gray-900 mb-2">{APP_CONFIG.projectName}</div>

@@ -9,7 +9,6 @@ const beVietnamPro = Be_Vietnam_Pro({
 });
 
 import { APP_CONFIG } from "@/configs/app.config";
-import SmoothScroll from "@/components/LandingPage/SmoothScroll";
 
 export const metadata: Metadata = {
   title: APP_CONFIG.projectName,
@@ -26,9 +25,7 @@ export default function RootLayout({
       <body
         className={`${beVietnamPro.variable} font-sans antialiased`}
       >
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+        {children}
       </body>
     </html>
   );

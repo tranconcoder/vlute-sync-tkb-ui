@@ -35,7 +35,7 @@ const phoneVariants = {
 
 export default function ReminderFeature() {
   return (
-    <section className="min-h-screen w-full flex items-center justify-center bg-white relative overflow-hidden">
+    <section className="min-h-[100dvh] w-full flex items-center justify-center bg-white snap-section relative overflow-hidden">
       <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
         <motion.div
           variants={containerVariants}

@@ -35,7 +35,7 @@ const cardVariants = {
 
 export default function NotificationFeature() {
   return (
-    <section className="min-h-screen w-full flex items-center justify-center bg-gray-50 relative overflow-hidden">
+    <section className="min-h-[100dvh] w-full flex items-center justify-center bg-gray-50 snap-section relative overflow-hidden">
       <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
         <motion.div
           variants={cardVariants}
