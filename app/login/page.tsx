@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen">
@@ -11,8 +13,15 @@ export default function LoginPage() {
 
         <div className="relative z-10 flex flex-col h-full justify-center">
           <div className="flex items-center gap-3 mb-12">
-            <div className="h-10 w-10 bg-white rounded-lg flex items-center justify-center text-primary font-bold text-xl">
-              V
+            <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center overflow-hidden shrink-0">
+              <Image 
+                src="/logo.png" 
+                alt="Vlute Sync Logo" 
+                width={48} 
+                height={48}
+                className="object-contain w-full h-full p-1"
+                priority
+              />
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight">Vlute Sync</h1>
           </div>
@@ -36,8 +45,15 @@ export default function LoginPage() {
           
           {/* Mobile Header (Hidden on large screens) */}
           <div className="lg:hidden flex flex-col items-center justify-center mb-8 gap-3">
-            <div className="h-12 w-12 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-              V
+            <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-md shrink-0 border border-gray-100">
+              <Image 
+                src="/logo.png" 
+                alt="Vlute Sync Logo" 
+                width={64} 
+                height={64}
+                className="object-contain w-full h-full p-2"
+                priority
+              />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-gray-900">Vlute Sync</h1>
           </div>
