@@ -25,14 +25,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
   }
 }
 
 @layer utilities {
   .section-snap {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    /* Removed scroll snap to prevent clunky feeling */
   }
 }
 
