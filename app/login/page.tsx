@@ -13,13 +13,13 @@ export default function LoginPage() {
 
         <div className="relative z-10 flex flex-col h-full justify-center">
           <div className="flex items-center gap-3 mb-12">
-            <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center overflow-hidden shrink-0">
+            <div className="h-12 w-12 bg-gray-900 rounded-xl flex items-center justify-center p-2 shrink-0">
               <Image 
                 src="/logo.png" 
                 alt="Vlute Sync Logo" 
                 width={48} 
                 height={48}
-                className="object-contain w-full h-full p-1"
+                className="object-contain w-full h-full"
                 priority
               />
             </div>
@@ -45,13 +45,13 @@ export default function LoginPage() {
           
           {/* Mobile Header (Hidden on large screens) */}
           <div className="lg:hidden flex flex-col items-center justify-center mb-8 gap-3">
-            <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-md shrink-0 border border-gray-100">
+            <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center p-3 shadow-md shrink-0">
               <Image 
                 src="/logo.png" 
                 alt="Vlute Sync Logo" 
                 width={64} 
                 height={64}
-                className="object-contain w-full h-full p-2"
+                className="object-contain w-full h-full"
                 priority
               />
             </div>
