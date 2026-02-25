@@ -2,8 +2,23 @@
 
 import Image from "next/image";
 import { APP_CONFIG } from "@/configs/app.config";
+import { useFormik } from "formik";
+import { loginValidationSchema } from "@/validations/login.validate";
 
 export default function LoginPage() {
+  const formik = useFormik({
+    initialValues: {
+      studentId: "",
+      password: "",
+    },
+    validationSchema: loginValidationSchema,
+    onSubmit: (values) => {
+      // Mock submit action handling
+      console.log("Submitting:", values);
+      alert(`Đăng nhập \nEmail: ${values.studentId}@st.vlute.edu.vn`);
+    },
+  });
+
   return (
     <div className="flex min-h-screen">
       {/* Left side - Brading / Visual (Hidden on mobile) */}
@@ -60,32 +75,41 @@ export default function LoginPage() {
             <p className="text-gray-600">Vui lòng nhập thông tin để tiếp tục.</p>
           </div>
 
-          <form className="space-y-6 mt-8" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-6 mt-8" onSubmit={formik.handleSubmit}>
             <div className="space-y-5">
               <div className="space-y-2">
                 <label htmlFor="studentId" className="block text-sm font-medium text-gray-900">
                   Email sinh viên
                 </label>
-                <div className="flex bg-white rounded-xl border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all">
+                <div 
+                  className={`flex bg-white rounded-xl border overflow-hidden focus-within:ring-2 focus-within:border-transparent transition-all ${
+                    formik.touched.studentId && formik.errors.studentId 
+                      ? "border-red-500 focus-within:ring-red-500" 
+                      : "border-gray-200 focus-within:ring-primary"
+                  }`}
+                >
                   <input
                     id="studentId"
+                    name="studentId"
                     type="text"
                     inputMode="numeric"
-                    pattern="[0-9]{8}"
                     maxLength={8}
-                    minLength={8}
-                    title="Vui lòng nhập đúng 8 số mã sinh viên"
                     placeholder="Nhập 8 số mã sinh viên"
+                    value={formik.values.studentId}
                     onChange={(e) => {
-                      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      formik.setFieldValue("studentId", val);
                     }}
+                    onBlur={formik.handleBlur}
                     className="w-full px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none font-medium tracking-wider"
-                    required
                   />
                   <div className="flex items-center px-4 bg-gray-50 border-l border-gray-200 text-gray-600 font-medium text-sm whitespace-nowrap">
                     @st.vlute.edu.vn
                   </div>
                 </div>
+                {formik.touched.studentId && formik.errors.studentId && (
+                  <p className="text-sm text-red-500 mt-1">{formik.errors.studentId}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -94,19 +118,30 @@ export default function LoginPage() {
                 </label>
                 <input
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                  required
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`w-full px-4 py-3 bg-white rounded-xl border text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
+                    formik.touched.password && formik.errors.password
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-200 focus:ring-primary"
+                  }`}
                 />
+                {formik.touched.password && formik.errors.password && (
+                  <p className="text-sm text-red-500 mt-1">{formik.errors.password}</p>
+                )}
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full flex items-center justify-center py-3.5 px-4 rounded-xl shadow-sm text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200"
+              disabled={formik.isSubmitting}
+              className="w-full flex items-center justify-center py-3.5 px-4 rounded-xl shadow-sm text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Đăng nhập
+              {formik.isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
             </button>
           </form>
         </div>
