@@ -12,18 +12,16 @@ export default function LoginPage() {
         <div className="absolute bottom-20 left-10 w-72 h-72 rounded-full bg-white opacity-5"></div>
 
         <div className="relative z-10 flex flex-col h-full justify-center">
-          <div className="flex items-center gap-3 mb-12">
-            <div className="h-12 w-12 bg-gray-900 rounded-xl flex items-center justify-center p-2 shrink-0">
-              <Image 
-                src="/logo.png" 
-                alt="Vlute Sync Logo" 
-                width={48} 
-                height={48}
-                className="object-contain w-full h-full"
-                priority
-              />
-            </div>
-            <h1 className="text-3xl font-extrabold tracking-tight">Vlute Sync</h1>
+          <div className="flex items-center gap-4 mb-12">
+            <Image 
+              src="/logo.png" 
+              alt="Vlute Sync Logo" 
+              width={80} 
+              height={80}
+              className="object-contain shrink-0 drop-shadow-md"
+              priority
+            />
+            <h1 className="text-4xl font-extrabold tracking-tight">Vlute Sync</h1>
           </div>
           
           <div className="mt-auto items-end flex pb-10">
@@ -44,18 +42,16 @@ export default function LoginPage() {
         <div className="w-full max-w-md space-y-8">
           
           {/* Mobile Header (Hidden on large screens) */}
-          <div className="lg:hidden flex flex-col items-center justify-center mb-8 gap-3">
-            <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center p-3 shadow-md shrink-0">
-              <Image 
-                src="/logo.png" 
-                alt="Vlute Sync Logo" 
-                width={64} 
-                height={64}
-                className="object-contain w-full h-full"
-                priority
-              />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Vlute Sync</h1>
+          <div className="lg:hidden flex flex-col items-center justify-center mb-10 gap-4">
+            <Image 
+              src="/logo.png" 
+              alt="Vlute Sync Logo" 
+              width={100} 
+              height={100}
+              className="object-contain shrink-0 drop-shadow-lg"
+              priority
+            />
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Vlute Sync</h1>
           </div>
 
           <div className="text-left space-y-2">
