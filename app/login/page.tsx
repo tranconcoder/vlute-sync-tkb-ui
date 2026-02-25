@@ -4,18 +4,44 @@ import Image from "next/image";
 import { APP_CONFIG } from "@/configs/app.config";
 import { useFormik } from "formik";
 import { loginValidationSchema } from "@/validations/login.validate";
+import axiosInstance from "@/lib/axios";
+import { useNotification } from "@/context/NotificationContext";
 
 export default function LoginPage() {
+  const { addNotification } = useNotification();
+
   const formik = useFormik({
     initialValues: {
       studentId: "",
       password: "",
     },
     validationSchema: loginValidationSchema,
-    onSubmit: (values) => {
-      // Mock submit action handling
-      console.log("Submitting:", values);
-      alert(`Đăng nhập \nEmail: ${values.studentId}@st.vlute.edu.vn`);
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await axiosInstance.post("/auth/login", values);
+        console.log("Login Success:", response.data);
+        
+        addNotification({
+          type: 'success',
+          message: 'Đăng nhập thành công! Hệ thống đang đồng bộ dữ liệu của bạn.',
+          duration: 3000
+        });
+      } catch (error: unknown) {
+        console.error("Login Error:", error);
+        let errorMessage = "Đã có lỗi xảy ra khi kết nối tới hệ thống.";
+        if (error && typeof error === 'object' && 'response' in error) {
+          const axiosError = error as { response?: { data?: { message?: string } } };
+          errorMessage = axiosError.response?.data?.message || errorMessage;
+        }
+
+        addNotification({
+          type: 'error',
+          message: `Lỗi đăng nhập: ${errorMessage}`,
+          duration: 5000
+        });
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -34,7 +60,7 @@ export default function LoginPage() {
               alt={`${APP_CONFIG.projectName} Logo`} 
               width={80} 
               height={80}
-              className="object-contain shrink-0 drop-shadow-md"
+              className="object-contain shrink-0 drop-shadow-md h-auto"
               priority
             />
             <h1 className="text-4xl font-extrabold tracking-tight">{APP_CONFIG.projectName}</h1>
@@ -64,7 +90,7 @@ export default function LoginPage() {
               alt={`${APP_CONFIG.projectName} Logo`} 
               width={100} 
               height={100}
-              className="object-contain shrink-0 drop-shadow-lg"
+              className="object-contain shrink-0 drop-shadow-lg h-auto"
               priority
             />
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">{APP_CONFIG.projectName}</h1>

@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   description: APP_CONFIG.projectDescription,
 };
 
+import { NotificationProvider } from "@/context/NotificationContext";
+import { NotificationContainer } from "@/components/Notification/NotificationContainer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,9 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${beVietnamPro.variable} font-sans antialiased`}
+        className={`${beVietnamPro.variable} font-sans antialiased dark`}
       >
-        {children}
+        <NotificationProvider>
+          {children}
+          <NotificationContainer />
+        </NotificationProvider>
       </body>
     </html>
   );
