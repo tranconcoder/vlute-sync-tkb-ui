@@ -70,8 +70,16 @@ export default function LoginPage() {
                   <input
                     id="studentId"
                     type="text"
-                    placeholder="Nhập mã sinh viên (VD: 200...)"
-                    className="w-full px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none"
+                    inputMode="numeric"
+                    pattern="[0-9]{8}"
+                    maxLength={8}
+                    minLength={8}
+                    title="Vui lòng nhập đúng 8 số mã sinh viên"
+                    placeholder="Nhập 8 số mã sinh viên"
+                    onChange={(e) => {
+                      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    }}
+                    className="w-full px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none font-medium tracking-wider"
                     required
                   />
                   <div className="flex items-center px-4 bg-gray-50 border-l border-gray-200 text-gray-600 font-medium text-sm whitespace-nowrap">
