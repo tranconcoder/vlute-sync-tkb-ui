@@ -8,8 +8,8 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
     },
   },
 };
@@ -19,7 +19,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { type: "spring", stiffness: 80, damping: 15 },
+    transition: { type: "spring" as const, stiffness: 100, damping: 15 },
   },
 };
 
@@ -29,7 +29,7 @@ const phoneVariants = {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 60, damping: 12, delay: 0.4 },
+    transition: { type: "spring" as const, stiffness: 80, damping: 12, delay: 0.2 },
   },
 };
 
@@ -41,7 +41,7 @@ export default function ReminderFeature() {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.1 }}
         >
           <motion.div variants={itemVariants} className="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6">
             <AlarmClock className="w-8 h-8" />
@@ -69,33 +69,50 @@ export default function ReminderFeature() {
            initial="hidden"
            whileInView="visible"
            viewport={{ once: true, amount: 0.3 }}
-           className="relative"
+           className="relative flex items-center justify-center pt-20 md:pt-0"
         >
-          <div className="w-full max-w-sm mx-auto bg-amber-500 rounded-[3rem] p-8 shadow-2xl shadow-amber-200 text-white flex flex-col items-center">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-6"
-            >
-              <AlarmClock className="w-10 h-10" />
-            </motion.div>
-            <div className="text-2xl font-bold mb-2">Đến giờ học!</div>
-            <div className="text-amber-100 mb-6 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-white animate-ping" />
-              Bắt đầu sau 15 phút
+          {/* Phone Subject */}
+          <div className="relative z-10 w-full max-w-[450px] aspect-square">
+            <img 
+              src="/assets/images/reminder-phone.png" 
+              alt="Smartphone Reminder" 
+              className="w-full h-full object-contain transform scale-125"
+            />
+          </div>
+
+          {/* Code-based Notification Bubble */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.5, x: 20, y: 0 }}
+            whileInView={{ opacity: 1, scale: 1, x: 50, y: -80 }}
+            transition={{ 
+              delay: 0.8,
+              type: "spring",
+              stiffness: 120,
+              damping: 12
+            }}
+            className="absolute top-1/2 right-1/2 z-20 w-[260px] bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-amber-100 p-5"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center shadow-lg shadow-amber-200 animate-pulse">
+                <AlarmClock className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="text-[10px] font-bold text-amber-600 uppercase">Lịch học sắp tới</div>
+                <div className="text-sm font-bold text-gray-900">Bắt đầu sau 15p</div>
+              </div>
             </div>
             
-            <div className="w-full space-y-3">
-              <div className="bg-white/10 p-4 rounded-2xl flex items-center justify-between">
-                <span className="font-medium text-sm">Toán cao cấp</span>
-                <span className="text-xs bg-white text-amber-600 px-2 py-1 rounded font-bold">A2 201</span>
+            <div className="bg-gray-900 text-white p-3 rounded-2xl">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[10px] font-medium text-gray-400">Tiết 1 - 3</span>
+                <span className="text-[10px] bg-amber-500 px-1.5 py-0.5 rounded font-bold">A2 201</span>
               </div>
-              <div className="bg-white/10 p-4 rounded-2xl opacity-50 flex items-center justify-between">
-                <span className="font-medium text-sm">Anh văn chuyên ngành</span>
-                <span className="text-xs px-2 py-1 rounded font-bold">13:30</span>
-              </div>
+              <div className="text-xs font-bold truncate">Toán cao cấp C1</div>
             </div>
-          </div>
+          </motion.div>
+
+          {/* Background Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-amber-400/10 blur-[100px] rounded-full -z-10" />
         </motion.div>
       </div>
     </section>

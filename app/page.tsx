@@ -3,6 +3,7 @@
 import Navbar from "@/components/LandingPage/Navbar";
 import Hero from "@/components/LandingPage/Hero";
 import OfflineFeature from "@/components/LandingPage/Features/OfflineFeature";
+import ExamFeature from "@/components/LandingPage/Features/ExamFeature";
 import NotificationFeature from "@/components/LandingPage/Features/NotificationFeature";
 import ReminderFeature from "@/components/LandingPage/Features/ReminderFeature";
 import CalendarFeature from "@/components/LandingPage/Features/CalendarFeature";
@@ -14,6 +15,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <OfflineFeature />
+      <ExamFeature />
       <NotificationFeature />
       <ReminderFeature />
       <CalendarFeature />
