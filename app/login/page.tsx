@@ -31,7 +31,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-background relative z-10">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-white text-gray-900 relative z-10">
         <div className="w-full max-w-md space-y-8">
           
           {/* Mobile Header (Hidden on large screens) */}
@@ -39,18 +39,18 @@ export default function LoginPage() {
             <div className="h-12 w-12 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg">
               V
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Vlute Sync</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Vlute Sync</h1>
           </div>
 
           <div className="text-left space-y-2">
-            <h2 className="text-3xl font-bold text-foreground tracking-tight">Đăng nhập</h2>
-            <p className="text-foreground/60">Vui lòng nhập thông tin để tiếp tục.</p>
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Đăng nhập</h2>
+            <p className="text-gray-600">Vui lòng nhập thông tin để tiếp tục.</p>
           </div>
 
           <form className="space-y-6 mt-8" onSubmit={(e) => e.preventDefault()}>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
                   Email
                 </label>
                 <input
@@ -63,7 +63,7 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-foreground">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-900">
                   Mật khẩu
                 </label>
                 <input
@@ -90,7 +90,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-background text-gray-500 font-medium tracking-wide">
+                <span className="px-4 bg-white text-gray-500 font-medium tracking-wide">
                   HOẶC TIẾP TỤC VỚI
                 </span>
               </div>
