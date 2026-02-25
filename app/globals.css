@@ -24,16 +24,30 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
+    scroll-behavior: auto !important;
   }
 }
 
-@layer utilities {
-  .section-snap {
-    scroll-snap-align: start;
-    scroll-snap-stop: normal;
-  }
+/* Lenis CSS */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 body {
@@ -41,5 +55,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-be-vietnam), sans-serif;
   overflow-x: hidden;
+  width: 100%;
+  overscroll-behavior: none;
 }
 

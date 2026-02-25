@@ -35,7 +35,7 @@ const imageVariants = {
 
 export default function OfflineFeature() {
   return (
-    <section id="features" className="h-screen w-full flex items-center justify-center bg-white section-snap relative overflow-hidden">
+    <section id="features" className="min-h-screen w-full flex items-center justify-center bg-white relative overflow-hidden">
       <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
         <motion.div
           variants={containerVariants}
