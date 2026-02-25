@@ -49,7 +49,7 @@ export default function ReminderFeature() {
           <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Nhắc nhở <br />
             <span className="text-amber-600">Đến giờ học</span>
-          </h2>
+          </motion.h2>
           <motion.p variants={itemVariants} className="text-xl text-gray-600 mb-8 leading-relaxed">
             Đặt lịch nhắc nhở 15, 30 phút hoặc 1 tiếng trước khi vào lớp. Đảm bảo bạn luôn có mặt đúng giờ và chuẩn bị tốt nhất cho mỗi buổi học.
           </motion.p>
