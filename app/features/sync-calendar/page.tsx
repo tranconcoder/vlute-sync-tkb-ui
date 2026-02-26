@@ -10,18 +10,14 @@ import {
   Settings2,
   CheckCircle2,
   ExternalLink,
-  ChevronRight,
   ShieldCheck,
   Calendar,
-  Mail,
   Clock,
-  History,
-  Info,
-  ChevronDown,
-  LayoutGrid,
-  UserPlus,
   MapPin,
-  Sparkles
+  Sparkles,
+  Info,
+  LogOut,
+  ChevronRight
 } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,15 +34,11 @@ export default function SyncCalendarPage() {
   const { user } = useSelector((state: RootState) => state.user);
   
   const [isSynced, setIsSynced] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false); // Linking process
+  const [isRefreshing, setIsRefreshing] = useState(false); // Sync data process
+  const [syncStatus, setSyncStatus] = useState("Sẵn sàng");
 
-  // Form States
-  const [selectedCalendar, setSelectedCalendar] = useState("primary");
-  const [reminderMinutes, setReminderMinutes] = useState(15);
-  const [syncFrequency, setSyncFrequency] = useState("auto");
-  
-  // Toggles requested specifically
+  // Notification Toggles
   const [notifUpcoming, setNotifUpcoming] = useState(true);
   const [notifChanges, setNotifChanges] = useState(true);
 
@@ -76,232 +68,262 @@ export default function SyncCalendarPage() {
 
   const handleSyncNow = async () => {
     setIsRefreshing(true);
-    toast.promise(new Promise((resolve) => setTimeout(resolve, 2000)), {
-      loading: "Đang yêu cầu đồng bộ...",
-      success: "Lịch học đã được cập nhật!",
-      error: "Đồng bộ thất bại.",
+    setSyncStatus("Đang đồng bộ môn Hệ thống nhúng...");
+    
+    toast.promise(new Promise((resolve) => setTimeout(resolve, 3000)), {
+      loading: "Đang đồng bộ lịch học...",
+      success: () => {
+        setSyncStatus("Đã đồng bộ xong");
+        setIsRefreshing(false);
+        return "Đồng bộ thành công!";
+      },
+      error: () => {
+        setSyncStatus("Đồng bộ thất bại");
+        setIsRefreshing(false);
+        return "Đồng bộ thất bại.";
+      }
     });
-    setTimeout(() => setIsRefreshing(false), 2000);
   };
 
-  // Modern Toggle Component
-  const ToggleButton = ({ active, label, subtitle, icon: Icon, onClick }: any) => (
+  const handleUnlink = () => {
+    toast.info("Đang hủy liên kết & xóa dữ liệu...");
+    setTimeout(() => {
+        setIsSynced(false);
+        toast.success("Đã hủy đồng bộ lịch hoàn toàn.");
+    }, 1500);
+  };
+
+  // Shared Toggle Component
+  const CustomToggle = ({ active, onClick }: { active: boolean, onClick: () => void }) => (
     <div 
-      className={`group flex items-center justify-between p-6 rounded-[2rem] border-2 transition-all cursor-pointer ${
-        active 
-        ? "bg-emerald-50/50 border-emerald-100 shadow-sm" 
-        : "bg-white border-gray-50 hover:border-gray-100"
-      }`}
       onClick={onClick}
+      className={`relative h-8 w-14 rounded-full transition-all duration-300 flex items-center px-1.5 shrink-0 cursor-pointer shadow-inner ${
+        active ? 'bg-emerald-500' : 'bg-gray-200'
+      }`}
     >
-      <div className="flex items-center gap-5">
-        <div className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all ${
-          active ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200" : "bg-gray-50 text-gray-400 group-hover:bg-gray-100"
-        }`}>
-          <Icon className="h-6 w-6" />
-        </div>
-        <div>
-          <p className="font-black text-gray-900 leading-tight">{label}</p>
-          <p className={`text-[11px] font-medium mt-1 leading-relaxed ${active ? "text-emerald-600/70" : "text-gray-400"}`}>
-            {subtitle}
-          </p>
-        </div>
-      </div>
-      
-      {/* Real Toggle Button Style */}
-      <div className={`relative h-8 w-14 rounded-full transition-all duration-300 flex items-center px-1.5 shrink-0 shadow-inner ${active ? 'bg-emerald-500' : 'bg-gray-200'}`}>
-        <motion.div 
-          animate={{ x: active ? 22 : 0 }} 
-          className="h-5 w-5 rounded-full bg-white shadow-xl" 
-        />
-      </div>
+      <motion.div 
+        animate={{ x: active ? 22 : 0 }} 
+        className="h-5 w-5 rounded-full bg-white shadow-xl" 
+      />
     </div>
   );
 
   return (
     <div className="max-w-4xl space-y-10 pb-24">
-      {/* Header with Account Info */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg">
-               <Calendar className="h-5 w-5" />
+      {/* 1. Section Thông tin (Information Section) */}
+      <section className="bg-white rounded-[3rem] border border-gray-100 p-10 shadow-xl shadow-gray-200/40 relative overflow-hidden">
+        <div className="relative z-10 space-y-8">
+            <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+                <div className="h-12 w-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
+                    <Info className="h-6 w-6" />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">Thông tin tài khoản</h2>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Account & Sync Status</p>
+                </div>
             </div>
-            <h2 className="text-4xl font-black text-gray-900 tracking-tight italic">
-              VLUTE<span className="text-emerald-600">Sync</span>
-            </h2>
-          </div>
-          
-          <div className="flex items-center gap-3">
+
             {isSynced && user?.google_info ? (
-              <div className="flex items-center gap-2 bg-emerald-50/50 px-4 py-2 rounded-2xl border border-emerald-100/50 shadow-sm">
-                <span className="text-sm font-black text-emerald-700 tracking-tight">{user.google_info.email}</span>
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <button 
-                  onClick={handleLinkGoogle}
-                  className="ml-2 px-3 py-1 rounded-lg bg-white border border-emerald-200 text-[10px] font-black uppercase text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
-                >
-                  Kết nối tài khoản khác
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-gray-400 font-medium text-sm">
-                <Sparkles className="h-4 w-4 text-emerald-400" />
-                Đồng bộ thời khoá biểu tự động lên Google Calendar
-              </div>
-            )}
-          </div>
-        </div>
-
-        {!isSynced && (
-          <button 
-            onClick={handleLinkGoogle}
-            disabled={isSyncing}
-            className="group h-16 px-12 rounded-[2rem] bg-emerald-600 hover:bg-emerald-700 text-white font-black flex items-center gap-4 transition-all shadow-xl shadow-emerald-200 active:scale-95 disabled:opacity-50"
-          >
-            {isSyncing ? (
-              <RefreshCw className="h-6 w-6 animate-spin" />
-            ) : (
-              <>
-                Kết nối với Google
-                <ExternalLink className="h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform opacity-30 group-hover:opacity-100" />
-              </>
-            )}
-          </button>
-        )}
-      </header>
-
-      {/* Main Feature Layout */}
-      <div className="grid lg:grid-cols-5 gap-8">
-         <div className="lg:col-span-3 space-y-8">
-            {/* Sync Configuration (Always visible but maybe disabled/styled) */}
-            <div className={`bg-white rounded-[3rem] border border-gray-100 p-10 shadow-sm space-y-10 transition-opacity ${!isSynced ? 'opacity-50 bg-gray-50/50 grayscale' : 'shadow-xl shadow-gray-200/40'}`}>
-               <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-                  <div className="h-12 w-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                     <Settings2 className="h-6 w-6" />
-                  </div>
-                  <div>
-                     <h4 className="text-xl font-black text-gray-900 tracking-tight">Cấu hình đồng bộ</h4>
-                     <p className="text-xs font-medium text-gray-400 mt-1 uppercase tracking-widest">Automatic Scheduling</p>
-                  </div>
-               </div>
-
-               <div className="space-y-8">
-                  <div className="space-y-3">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Lịch lưu trữ (Google Calendar)</label>
-                    <div className="relative group">
-                       <select 
-                        disabled={!isSynced}
-                        value={selectedCalendar}
-                        onChange={(e) => setSelectedCalendar(e.target.value)}
-                        className="w-full h-16 bg-gray-50/50 border-2 border-gray-100 rounded-[1.5rem] px-8 font-black text-gray-900 focus:outline-none focus:border-emerald-500 appearance-none transition-all hover:bg-white"
-                       >
-                          <option value="primary">Lịch chính của bạn</option>
-                          <option value="vlute">Tạo lịch mới "VLUTE TKB"</option>
-                       </select>
-                       <ChevronDown className="absolute right-8 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300" />
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                            <div className="h-12 w-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400">
+                                <Sparkles className="h-6 w-6" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-black text-gray-900 leading-tight">Email liên kết</p>
+                                <p className="text-emerald-600 font-bold">{user.google_info.email}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                            <div className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${isRefreshing ? 'bg-emerald-50 text-emerald-500' : 'bg-gray-50 text-gray-400'}`}>
+                                <RefreshCw className={`h-6 w-6 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-black text-gray-900 leading-tight">Trạng thái đồng bộ</p>
+                                <p className={`text-sm font-bold ${isRefreshing ? 'text-emerald-500' : 'text-gray-400'}`}>
+                                    {syncStatus}
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-3">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Thời gian nhắc nhở (Phút)</label>
+                    <button 
+                        onClick={handleLinkGoogle}
+                        className="h-14 px-8 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 text-gray-500 hover:bg-gray-100 hover:border-emerald-300 hover:text-emerald-600 font-black text-sm flex items-center justify-center gap-3 transition-all"
+                    >
+                        <UserPlus className="h-5 w-5" />
+                        Đổi tài khoản khác
+                    </button>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-10 gap-8 text-center">
                     <div className="relative">
-                       <input 
-                        disabled={!isSynced}
-                        type="number"
-                        min="0"
-                        value={reminderMinutes}
-                        onChange={(e) => setReminderMinutes(parseInt(e.target.value) || 0)}
-                        className="w-full h-16 bg-gray-50/50 border-2 border-gray-100 rounded-[1.5rem] px-8 font-black text-gray-900 focus:outline-none focus:border-emerald-500 transition-all hover:bg-white pr-20"
-                       />
-                       <Clock className="absolute right-8 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300" />
+                        <div className="h-28 w-28 rounded-[2.5rem] bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-inner">
+                            <Calendar className="h-12 w-12" />
+                        </div>
+                        <div className="absolute -right-2 -bottom-2 h-10 w-10 rounded-full bg-white shadow-xl flex items-center justify-center text-red-500 border border-red-50">
+                            <ShieldCheck className="h-5 w-5" />
+                        </div>
                     </div>
-                  </div>
-               </div>
-
-               {isSynced && (
-                 <button 
-                   onClick={handleSyncNow}
-                   disabled={isRefreshing}
-                   className="w-full h-16 rounded-[1.5rem] bg-gray-900 hover:bg-black text-white font-black flex items-center justify-center gap-4 transition-all shadow-xl active:scale-95 disabled:opacity-50"
-                 >
-                   <RefreshCw className={`h-6 w-6 ${isRefreshing ? 'animate-spin' : ''}`} />
-                   Đồng bộ thủ công ngay
-                 </button>
-               )}
-            </div>
-
-            <div className="flex items-center gap-4 p-8 rounded-[2rem] bg-emerald-600 text-white shadow-xl shadow-emerald-200">
-               <div className="h-14 w-14 shrink-0 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner">
-                  <ShieldCheck className="h-8 w-8 text-white/50" />
-               </div>
-               <div>
-                  <h5 className="font-black text-lg">Mã hóa RSA 2048-bit</h5>
-                  <p className="text-white/60 text-xs font-medium leading-relaxed mt-1">
-                    Dữ liệu đăng nhập trường của bạn được mã hóa và bảo vệ an toàn tuyệt đối. Chúng tôi chỉ trung chuyển dữ liệu lịch, không lưu trữ thông tin nhạy cảm.
-                  </p>
-               </div>
-            </div>
-         </div>
-
-         <div className="lg:col-span-2 space-y-8">
-            {/* Toggle Section - As requested explicitly by user */}
-            <div className="space-y-6">
-              <h4 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Tuỳ chọn chức năng</h4>
-              
-              <div className="grid gap-4">
-                 <ToggleButton 
-                    active={notifUpcoming}
-                    onClick={() => setNotifUpcoming(!notifUpcoming)}
-                    label="Nhắc nhở buổi học"
-                    subtitle="Bật/tắt thông báo khi sắp đến giờ vào lớp."
-                    icon={Bell}
-                 />
-
-                 <ToggleButton 
-                    active={notifChanges}
-                    onClick={() => setNotifChanges(!notifChanges)}
-                    label="Thay đổi lịch học"
-                    subtitle="Thông báo khi có sự thay đổi về phòng học/tiết học."
-                    icon={MapPin}
-                 />
-              </div>
-            </div>
-
-            {/* Account Management */}
-            {isSynced && (
-               <div className="bg-white border-2 border-red-50 rounded-[2.5rem] p-8 space-y-6 shadow-sm overflow-hidden relative">
-                  <div className="flex items-start gap-4">
-                     <div className="h-12 w-12 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 shrink-0 shadow-inner">
-                        <AlertTriangle className="h-6 w-6" />
-                     </div>
-                     <div className="space-y-1">
-                        <h5 className="font-black text-gray-900 tracking-tight">Vùng nguy hiểm</h5>
-                        <p className="text-[11px] font-medium text-gray-400 leading-relaxed">
-                          Huỷ đồng bộ sẽ xoá toàn bộ các sự kiện lịch tập trung đã tạo trên Google Calendar của bạn.
+                    
+                    <div className="space-y-3 max-w-sm">
+                        <h3 className="text-2xl font-black text-gray-900 italic">Bắt đầu đồng bộ</h3>
+                        <p className="text-gray-400 font-medium leading-relaxed">
+                            Liên kết tài khoản Google để tự động hóa thời khóa biểu lên Google Calendar một cách thông minh.
                         </p>
-                     </div>
-                  </div>
-                  <button 
-                    onClick={() => {
-                       setIsSynced(false);
-                       toast.error("Đã gỡ bỏ toàn bộ liên kết đồng bộ.");
-                    }}
-                    className="w-full h-14 rounded-[1.2rem] bg-white border border-red-200 text-red-500 hover:bg-red-500 hover:text-white font-black text-[11px] uppercase tracking-widest transition-all"
-                  >
-                    Huỷ & Xoá dữ liệu đồng bộ
-                  </button>
-               </div>
-            )}
+                    </div>
 
-            <div className="p-8 rounded-[2.5rem] bg-gray-50 flex flex-col items-center justify-center text-center gap-4">
-               <Info className="h-10 w-10 text-gray-200" />
-               <p className="text-[10px] font-bold text-gray-400 max-w-[150px] uppercase tracking-widest leading-loose">
-                  Mọi cài đặt sẽ được lưu ngay lập tức
-               </p>
-            </div>
-         </div>
+                    <button 
+                        onClick={handleLinkGoogle}
+                        disabled={isSyncing}
+                        className="group h-16 px-12 rounded-[2rem] bg-emerald-600 hover:bg-emerald-700 text-white font-black flex items-center gap-4 transition-all shadow-2xl shadow-emerald-200 active:scale-95 disabled:opacity-50"
+                    >
+                        {isSyncing ? (
+                            <RefreshCw className="h-6 w-6 animate-spin" />
+                        ) : (
+                            <>
+                                Kết nối Google
+                                <ExternalLink className="h-5 w-5 opacity-30 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
+                            </>
+                        )}
+                    </button>
+                </div>
+            )}
+        </div>
+        
+        {/* Background Decals */}
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-emerald-50/40 blur-[100px] pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-blue-50/20 blur-[100px] pointer-events-none" />
+      </section>
+
+      {/* Conditional Rendering of bottom sections */}
+      <AnimatePresence>
+        {isSynced && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="space-y-10"
+          >
+            {/* 2. Section Đồng bộ (Sync Section) */}
+            <section className="bg-white rounded-[3rem] border border-gray-100 p-10 shadow-sm space-y-8">
+                <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+                    <div className="h-12 w-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center">
+                        <RefreshCw className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">Thao tác đồng bộ</h2>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Control Panel</p>
+                    </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                    <button 
+                        onClick={handleSyncNow}
+                        disabled={isRefreshing}
+                        className="group relative h-20 rounded-[2rem] bg-emerald-600 hover:bg-emerald-700 text-white font-black flex items-center justify-center gap-4 transition-all shadow-xl shadow-emerald-200 active:scale-95 disabled:opacity-50"
+                    >
+                        <RefreshCw className={`h-6 w-6 ${isRefreshing ? 'animate-spin' : ''}`} />
+                        Đồng bộ ngay
+                    </button>
+
+                    <button 
+                        onClick={handleUnlink}
+                        className="h-20 rounded-[2rem] bg-white border-2 border-red-50 text-red-500 hover:bg-red-50 font-black flex items-center justify-center gap-4 transition-all active:scale-95"
+                    >
+                        <Trash2 className="h-6 w-6" />
+                        Hủy đồng bộ & Xóa lịch
+                    </button>
+                </div>
+            </section>
+
+            {/* 3. Section Group Thông báo (Notification Group) */}
+            <section className="bg-white rounded-[3rem] border border-gray-100 p-10 shadow-sm space-y-10">
+                <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+                    <div className="h-12 w-12 rounded-2xl bg-gray-900 text-white flex items-center justify-center">
+                        <Bell className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">Cấu hình thông báo</h2>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Smart Alerts</p>
+                    </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                    {/* Toggle: Upcoming Session */}
+                    <div className="flex items-center justify-between p-6 rounded-[2.2rem] bg-gray-50/50 border border-gray-100 transition-all hover:bg-white group">
+                        <div className="flex items-center gap-5">
+                            <div className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all ${notifUpcoming ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white text-gray-300 border border-gray-100 shadow-sm'}`}>
+                                <Bell className="h-6 w-6" />
+                            </div>
+                            <div>
+                                <p className="font-black text-gray-900 leading-tight">Nhắc nhở buổi học</p>
+                                <p className="text-[11px] font-medium text-gray-400 mt-1 uppercase tracking-tight">Session Reminders</p>
+                            </div>
+                        </div>
+                        <CustomToggle active={notifUpcoming} onClick={() => setNotifUpcoming(!notifUpcoming)} />
+                    </div>
+
+                    {/* Toggle: Schedule Changes */}
+                    <div className="flex items-center justify-between p-6 rounded-[2.2rem] bg-gray-50/50 border border-gray-100 transition-all hover:bg-white group">
+                        <div className="flex items-center gap-5">
+                            <div className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all ${notifChanges ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white text-gray-300 border border-gray-100 shadow-sm'}`}>
+                                <MapPin className="h-6 w-6" />
+                            </div>
+                            <div>
+                                <p className="font-black text-gray-900 leading-tight">Cảnh báo thay đổi</p>
+                                <p className="text-[11px] font-medium text-gray-400 mt-1 uppercase tracking-tight">Change Notifications</p>
+                            </div>
+                        </div>
+                        <CustomToggle active={notifChanges} onClick={() => setNotifChanges(!notifChanges)} />
+                    </div>
+                </div>
+            </section>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Security Info Card */}
+      <div className="flex items-start gap-5 p-8 rounded-[2.5rem] bg-gray-900 text-white shadow-2xl shadow-gray-200 overflow-hidden relative">
+          <div className="h-14 w-14 rounded-[1.2rem] bg-emerald-500 flex items-center justify-center text-white shrink-0 relative z-10">
+              <ShieldCheck className="h-8 w-8" />
+          </div>
+          <div className="relative z-10 space-y-1">
+              <h5 className="font-black text-lg tracking-tight italic">Công nghệ bảo mật nâng cao</h5>
+              <p className="text-white/50 text-xs font-medium leading-relaxed">
+                  Toàn bộ quá trình đồng bộ được thực hiện qua mã hóa OAuth2 chuẩn Google. 
+                  Chúng tôi cam kết không lưu giữ thông tin cá nhân ngoài tài khoản email trung chuyển.
+              </p>
+          </div>
+          <div className="absolute right-0 bottom-0 translate-x-1/4 translate-y-1/4 opacity-10">
+              <ShieldCheck className="h-48 w-48" />
+          </div>
       </div>
     </div>
+  );
+}
+
+// Helper icons needed
+function UserPlus(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <line x1="19" x2="19" y1="8" y2="14" />
+      <line x1="22" x2="16" y1="11" y2="11" />
+    </svg>
   );
 }
