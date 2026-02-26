@@ -20,6 +20,7 @@ import { AppDispatch, RootState } from "@/store";
 import { fetchCurrentUser } from "@/store/slices/userSlice";
 import { APP_CONFIG } from "@/configs/app.config";
 import { toast } from "sonner"; // Assuming sonner is used, based on typical premium look or alert UI
+import axiosInstance from "@/lib/axios";
 
 export default function SyncCalendarPage() {
   const searchParams = useSearchParams();
@@ -48,9 +49,17 @@ export default function SyncCalendarPage() {
     }
   }, [searchParams, dispatch, router]);
 
-  const handleSync = () => {
+  const handleSync = async () => {
     setIsSyncing(true);
-    window.location.href = `${APP_CONFIG.apiBaseUrl}/auth/google`;
+    try {
+      // Refresh token to ensure session is valid and secrets are rotated before linking
+      await axiosInstance.post("/auth/refresh");
+      window.location.href = `${APP_CONFIG.apiBaseUrl}/auth/google`;
+    } catch (error) {
+      console.error("Refresh failed before linking:", error);
+      // Fallback: Try redirecting anyway, the backend might still handle it or fail gracefully
+      window.location.href = `${APP_CONFIG.apiBaseUrl}/auth/google`;
+    }
   };
 
   return (
