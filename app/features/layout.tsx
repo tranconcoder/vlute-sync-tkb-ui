@@ -13,6 +13,7 @@ import {
   LayoutDashboard
 } from "lucide-react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const navItems = [
   { name: "Lịch học", href: "/features", icon: Calendar },
@@ -32,9 +33,15 @@ export default function FeaturesLayout({
       {/* Sidebar - Desktop */}
       <aside className="fixed left-0 top-0 hidden h-full w-64 border-r border-gray-100 bg-white p-6 lg:block z-50">
         <div className="flex flex-col h-full">
-          <div className="mb-10 flex items-center gap-2 px-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500 shadow-lg shadow-emerald-200">
-              <LayoutDashboard className="h-6 w-6 text-white" />
+          <div className="mb-10 flex items-center gap-3 px-2">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-xl shadow-emerald-100/50 border border-emerald-50 p-2 group-hover:scale-105 transition-transform">
+              <Image 
+                src="/logo.png" 
+                alt="VLUTE Logo" 
+                width={40} 
+                height={40}
+                className="object-contain"
+              />
             </div>
             <span className="text-xl font-black tracking-tight text-gray-900">
               VLUTE<span className="text-emerald-500">Sync</span>
@@ -90,8 +97,14 @@ export default function FeaturesLayout({
       <main className="min-h-screen lg:pl-64 pb-20 lg:pb-0">
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between bg-white/80 px-6 backdrop-blur-xl lg:h-20 lg:px-10 border-b border-gray-50/50">
           <div className="flex items-center gap-4 lg:hidden">
-             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 text-white">
-                <LayoutDashboard className="h-5 w-5" />
+             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1.5 border border-emerald-100 shadow-sm">
+                <Image 
+                  src="/logo.png" 
+                  alt="VLUTE Logo" 
+                  width={32} 
+                  height={32}
+                  className="object-contain"
+                />
              </div>
              <span className="font-black text-gray-900">VLUTE Sync</span>
           </div>
