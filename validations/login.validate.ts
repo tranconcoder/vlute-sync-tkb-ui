@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 export const loginValidationSchema = Yup.object({
-  studentId: Yup.string()
+  student_id: Yup.string()
     .required("Vui lòng nhập mã sinh viên")
     .matches(
       /^[0-9]{8}$/,

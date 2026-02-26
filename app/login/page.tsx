@@ -12,7 +12,7 @@ export default function LoginPage() {
 
   const formik = useFormik({
     initialValues: {
-      studentId: "",
+      student_id: "",
       password: "",
     },
     validationSchema: loginValidationSchema,
@@ -104,27 +104,27 @@ export default function LoginPage() {
           <form className="space-y-6 mt-8" onSubmit={formik.handleSubmit}>
             <div className="space-y-5">
               <div className="space-y-2">
-                <label htmlFor="studentId" className="block text-sm font-medium text-gray-900">
+                <label htmlFor="student_id" className="block text-sm font-medium text-gray-900">
                   Email sinh viên
                 </label>
                 <div 
                   className={`flex bg-white rounded-xl border overflow-hidden focus-within:ring-2 focus-within:border-transparent transition-all ${
-                    formik.touched.studentId && formik.errors.studentId 
+                    formik.touched.student_id && formik.errors.student_id 
                       ? "border-red-500 focus-within:ring-red-500" 
                       : "border-gray-200 focus-within:ring-primary"
                   }`}
                 >
                   <input
-                    id="studentId"
-                    name="studentId"
+                    id="student_id"
+                    name="student_id"
                     type="text"
                     inputMode="numeric"
                     maxLength={8}
                     placeholder="Nhập 8 số mã sinh viên"
-                    value={formik.values.studentId}
+                    value={formik.values.student_id}
                     onChange={(e) => {
                       const val = e.target.value.replace(/[^0-9]/g, '');
-                      formik.setFieldValue("studentId", val);
+                      formik.setFieldValue("student_id", val);
                     }}
                     onBlur={formik.handleBlur}
                     className="w-full px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none font-medium tracking-wider"
@@ -133,8 +133,8 @@ export default function LoginPage() {
                     @st.vlute.edu.vn
                   </div>
                 </div>
-                {formik.touched.studentId && formik.errors.studentId && (
-                  <p className="text-sm text-red-500 mt-1">{formik.errors.studentId}</p>
+                {formik.touched.student_id && formik.errors.student_id && (
+                  <p className="text-sm text-red-500 mt-1">{formik.errors.student_id}</p>
                 )}
               </div>
 
