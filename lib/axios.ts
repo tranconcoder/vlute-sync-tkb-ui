@@ -1,7 +1,8 @@
 import axios from "axios";
+import { APP_CONFIG } from "@/configs/app.config";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000", // Direct call to backend port
+  baseURL: APP_CONFIG.apiBaseUrl,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
