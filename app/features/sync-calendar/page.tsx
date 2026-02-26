@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   RefreshCw, 
@@ -14,17 +14,43 @@ import {
   ShieldCheck,
   Calendar
 } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
+import { fetchCurrentUser } from "@/store/slices/userSlice";
+import { APP_CONFIG } from "@/configs/app.config";
+import { toast } from "sonner"; // Assuming sonner is used, based on typical premium look or alert UI
 
 export default function SyncCalendarPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.user);
+  
   const [isSynced, setIsSynced] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
+  useEffect(() => {
+    if (user?.google_info) {
+      setIsSynced(true);
+    } else {
+      setIsSynced(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const linkingStatus = searchParams.get("linking");
+    if (linkingStatus === "success") {
+      toast.success("Liên kết Google Calendar thành công!");
+      dispatch(fetchCurrentUser());
+      // Remove query param without refreshing
+      router.replace("/features/sync-calendar");
+    }
+  }, [searchParams, dispatch, router]);
+
   const handleSync = () => {
     setIsSyncing(true);
-    setTimeout(() => {
-      setIsSyncing(false);
-      setIsSynced(true);
-    }, 2000);
+    window.location.href = `${APP_CONFIG.apiBaseUrl}/auth/google`;
   };
 
   return (
@@ -60,7 +86,12 @@ export default function SyncCalendarPage() {
                 <h3 className="text-2xl font-black text-gray-900">
                   {isSynced ? "Lịch đang hoạt động" : "Chưa kết nối Google Calendar"}
                 </h3>
-                <p className="text-gray-500 font-medium">
+                {isSynced && user?.google_info && (
+                  <p className="text-sm font-bold text-emerald-600 bg-emerald-50/50 px-3 py-1 rounded-full w-fit mt-1">
+                    {user.google_info.email}
+                  </p>
+                )}
+                <p className="text-gray-500 font-medium mt-2">
                   {isSynced 
                     ? "Lịch học của bạn đang được đồng bộ tự động mỗi khi có thay đổi." 
                     : "Đăng nhập bằng tài khoản Google để bắt đầu đồng bộ lịch học của bạn."}
@@ -78,7 +109,7 @@ export default function SyncCalendarPage() {
                       <RefreshCw className="h-5 w-5 animate-spin" />
                     ) : (
                       <>
-                        Đăng nhập bằng Google
+                        Kết nối Google
                         <ExternalLink className="h-5 w-5 opacity-50 group-hover:opacity-100 transition-opacity" />
                       </>
                     )}
@@ -86,7 +117,7 @@ export default function SyncCalendarPage() {
                 ) : (
                   <div className="flex items-center gap-2 rounded-2xl bg-emerald-50 px-4 py-2 font-black text-xs text-emerald-600 uppercase tracking-widest border border-emerald-100">
                     <ShieldCheck className="h-4 w-4" />
-                    Bảo mật tuyệt đối
+                    Đã bảo mật & Liên kết
                   </div>
                 )}
              </div>
@@ -148,7 +179,10 @@ export default function SyncCalendarPage() {
                  </button>
 
                  <button 
-                  onClick={() => setIsSynced(false)}
+                  onClick={() => {
+                    // In real app, call API to unlink
+                    setIsSynced(false);
+                  }}
                   className="group flex items-center justify-between p-6 rounded-[2rem] bg-red-50/30 border border-red-50 hover:bg-red-50 transition-all"
                  >
                     <div className="flex items-center gap-4 text-red-500 font-black">

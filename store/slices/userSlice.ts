@@ -10,6 +10,12 @@ export interface UserInfo {
   class_name?: string;
   major_name?: string;
   role: string;
+  google_info?: {
+    id: string;
+    email: string;
+    name: string;
+    avatar?: string;
+  };
 }
 
 interface UserState {
