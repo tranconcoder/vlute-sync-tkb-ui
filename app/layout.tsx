@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 
 import { NotificationProvider } from "@/context/NotificationContext";
 import { NotificationContainer } from "@/components/Notification/NotificationContainer";
+import { ReduxProvider } from "@/store/Provider";
 
 export default function RootLayout({
   children,
@@ -28,10 +29,12 @@ export default function RootLayout({
       <body
         className={`${beVietnamPro.variable} font-sans antialiased dark`}
       >
-        <NotificationProvider>
-          {children}
-          <NotificationContainer />
-        </NotificationProvider>
+        <ReduxProvider>
+          <NotificationProvider>
+            {children}
+            <NotificationContainer />
+          </NotificationProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
