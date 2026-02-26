@@ -7,10 +7,8 @@ import {
   Calendar, 
   RefreshCw, 
   Settings, 
-  Home, 
   LogOut,
   User,
-  LayoutDashboard
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -114,9 +112,6 @@ export default function FeaturesLayout({
           </h1>
 
           <div className="flex items-center gap-4">
-             <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-100 bg-white transition-colors hover:bg-gray-50 cursor-pointer">
-                <User className="h-5 w-5 text-gray-600" />
-             </div>
           </div>
         </header>
 
