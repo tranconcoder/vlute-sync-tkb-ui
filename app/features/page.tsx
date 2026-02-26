@@ -11,10 +11,19 @@ import {
   AlertCircle,
   CalendarDays,
   CalendarRange,
-  CalendarSearch
 } from "lucide-react";
 
-const scheduleData = [
+interface ScheduleItem {
+  id: number;
+  course: string;
+  time: string;
+  room: string;
+  instructor: string;
+  type: string;
+  color: string;
+}
+
+const scheduleData: ScheduleItem[] = [
   {
     id: 1,
     course: "Phát triển ứng dụng di động",
@@ -170,7 +179,7 @@ export default function SchedulePage() {
   );
 }
 
-function DayCard({ item, index, compact = false }: { item: any, index: number, compact?: boolean }) {
+function DayCard({ item, index, compact = false }: { item: ScheduleItem, index: number, compact?: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
