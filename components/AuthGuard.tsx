@@ -40,8 +40,8 @@ export function AuthGuard({
     }
   }, [isInitialized, isAuthenticated, requireAuth, redirectTo, router, pathname]);
 
-  // Show nothing while checking auth
-  if (!isInitialized || isLoading) {
+  // Show nothing while checking initial auth
+  if (!isInitialized) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="h-8 w-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
