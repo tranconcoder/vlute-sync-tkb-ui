@@ -27,13 +27,33 @@ import { APP_CONFIG } from "@/configs/app.config";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axios";
 
+// Shared Toggle Component (outside to avoid recreate during render)
+const CustomToggle = ({ active, onClick }: { active: boolean, onClick: () => void }) => (
+  <div 
+    onClick={(e) => {
+      e.stopPropagation();
+      onClick();
+    }}
+    className={`relative h-8 w-14 rounded-full transition-all duration-300 flex items-center px-1.5 shrink-0 cursor-pointer shadow-inner ${
+      active ? 'bg-emerald-500' : 'bg-gray-200'
+    }`}
+  >
+    <motion.div 
+      animate={{ x: active ? 22 : 0 }} 
+      className="h-5 w-5 rounded-full bg-white shadow-xl" 
+    />
+  </div>
+);
+
 export default function SyncCalendarPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.user);
   
-  const [isSynced, setIsSynced] = useState(false);
+  // Derived state to avoid layout shift and sync issues
+  const isSynced = !!user?.google_info;
+  
   const [isSyncing, setIsSyncing] = useState(false); // Linking process
   const [isRefreshing, setIsRefreshing] = useState(false); // Sync data process
   const [syncStatus, setSyncStatus] = useState("Sẵn sàng");
@@ -42,8 +62,15 @@ export default function SyncCalendarPage() {
   const [notifUpcoming, setNotifUpcoming] = useState(true);
   const [notifChanges, setNotifChanges] = useState(true);
 
+  // Debug log
   useEffect(() => {
-      setIsSynced(!!user?.google_info);
+    if (user) {
+      console.log("SyncCalendarPage: User detail:", {
+        id: user._id,
+        hasGoogleInfo: !!user.google_info,
+        googleInfo: user.google_info
+      });
+    }
   }, [user]);
 
   useEffect(() => {
@@ -86,27 +113,20 @@ export default function SyncCalendarPage() {
   };
 
   const handleUnlink = () => {
-    toast.info("Đang hủy liên kết & xóa dữ liệu...");
-    setTimeout(() => {
-        setIsSynced(false);
-        toast.success("Đã hủy đồng bộ lịch hoàn toàn.");
-    }, 1500);
+    toast.promise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          // In real app, this would be an API call
+          resolve(true);
+        }, 1500);
+      }),
+      {
+        loading: "Đang hủy liên kết & xóa dữ liệu...",
+        success: "Đã hủy đồng bộ lịch hoàn toàn.",
+        error: "Có lỗi xảy ra."
+      }
+    );
   };
-
-  // Shared Toggle Component
-  const CustomToggle = ({ active, onClick }: { active: boolean, onClick: () => void }) => (
-    <div 
-      onClick={onClick}
-      className={`relative h-8 w-14 rounded-full transition-all duration-300 flex items-center px-1.5 shrink-0 cursor-pointer shadow-inner ${
-        active ? 'bg-emerald-500' : 'bg-gray-200'
-      }`}
-    >
-      <motion.div 
-        animate={{ x: active ? 22 : 0 }} 
-        className="h-5 w-5 rounded-full bg-white shadow-xl" 
-      />
-    </div>
-  );
 
   return (
     <div className="max-w-4xl space-y-10 pb-24">
@@ -127,12 +147,20 @@ export default function SyncCalendarPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-12 w-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400">
-                                <Sparkles className="h-6 w-6" />
-                            </div>
+                            {user.google_info.avatar ? (
+                                <img 
+                                    src={user.google_info.avatar} 
+                                    className="h-12 w-12 rounded-2xl border border-gray-100 shadow-sm"
+                                    alt="Avatar"
+                                />
+                            ) : (
+                                <div className="h-12 w-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400">
+                                    <Sparkles className="h-6 w-6" />
+                                </div>
+                            )}
                             <div>
-                                <p className="text-sm font-black text-gray-900 leading-tight">Email liên kết</p>
-                                <p className="text-emerald-600 font-bold">{user.google_info.email}</p>
+                                <p className="text-sm font-black text-gray-900 leading-tight">{user.google_info.name || 'Email liên kết'}</p>
+                                <p className="text-emerald-600 font-bold text-sm tracking-tight">{user.google_info.email}</p>
                             </div>
                         </div>
                         
@@ -151,10 +179,10 @@ export default function SyncCalendarPage() {
 
                     <button 
                         onClick={handleLinkGoogle}
-                        className="h-14 px-8 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 text-gray-500 hover:bg-gray-100 hover:border-emerald-300 hover:text-emerald-600 font-black text-sm flex items-center justify-center gap-3 transition-all"
+                        className="h-14 px-8 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 text-gray-400 hover:bg-gray-100 hover:border-emerald-300 hover:text-emerald-600 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all"
                     >
-                        <UserPlus className="h-5 w-5" />
-                        Đổi tài khoản khác
+                        <ExternalLink className="h-4 w-4" />
+                        Đổi tài khoản
                     </button>
                 </div>
             ) : (
@@ -170,8 +198,8 @@ export default function SyncCalendarPage() {
                     
                     <div className="space-y-3 max-w-sm">
                         <h3 className="text-2xl font-black text-gray-900 italic">Bắt đầu đồng bộ</h3>
-                        <p className="text-gray-400 font-medium leading-relaxed">
-                            Liên kết tài khoản Google để tự động hóa thời khóa biểu lên Google Calendar một cách thông minh.
+                        <p className="text-gray-400 font-medium leading-relaxed italic">
+                            Bạn chưa liên kết tài khoản Google Calendar. Vui lòng kết nối để tự động bộ thời khóa biểu.
                         </p>
                     </div>
 
@@ -184,7 +212,7 @@ export default function SyncCalendarPage() {
                             <RefreshCw className="h-6 w-6 animate-spin" />
                         ) : (
                             <>
-                                Kết nối Google
+                                Kết nối Google ngay
                                 <ExternalLink className="h-5 w-5 opacity-30 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
                             </>
                         )}
@@ -199,9 +227,10 @@ export default function SyncCalendarPage() {
       </section>
 
       {/* Conditional Rendering of bottom sections */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isSynced && (
           <motion.div
+            key="bottom-sections"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -253,7 +282,10 @@ export default function SyncCalendarPage() {
 
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* Toggle: Upcoming Session */}
-                    <div className="flex items-center justify-between p-6 rounded-[2.2rem] bg-gray-50/50 border border-gray-100 transition-all hover:bg-white group">
+                    <div 
+                        className="flex items-center justify-between p-6 rounded-[2.2rem] bg-gray-50/50 border border-gray-100 transition-all hover:bg-white group cursor-pointer"
+                        onClick={() => setNotifUpcoming(!notifUpcoming)}
+                    >
                         <div className="flex items-center gap-5">
                             <div className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all ${notifUpcoming ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white text-gray-300 border border-gray-100 shadow-sm'}`}>
                                 <Bell className="h-6 w-6" />
@@ -267,7 +299,10 @@ export default function SyncCalendarPage() {
                     </div>
 
                     {/* Toggle: Schedule Changes */}
-                    <div className="flex items-center justify-between p-6 rounded-[2.2rem] bg-gray-50/50 border border-gray-100 transition-all hover:bg-white group">
+                    <div 
+                        className="flex items-center justify-between p-6 rounded-[2.2rem] bg-gray-50/50 border border-gray-100 transition-all hover:bg-white group cursor-pointer"
+                        onClick={() => setNotifChanges(!notifChanges)}
+                    >
                         <div className="flex items-center gap-5">
                             <div className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all ${notifChanges ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white text-gray-300 border border-gray-100 shadow-sm'}`}>
                                 <MapPin className="h-6 w-6" />
@@ -302,28 +337,5 @@ export default function SyncCalendarPage() {
           </div>
       </div>
     </div>
-  );
-}
-
-// Helper icons needed
-function UserPlus(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <line x1="19" x2="19" y1="8" y2="14" />
-      <line x1="22" x2="16" y1="11" y2="11" />
-    </svg>
   );
 }
