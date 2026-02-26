@@ -1,12 +1,11 @@
-```javascript
 "use client";
 
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { useFormik } from "formik";
 import { loginValidationSchema } from "@/validations/login.validate";
 import axiosInstance from "@/lib/axios";
 import { useNotification } from "@/context/NotificationContext";
-import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Lock, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,7 +22,7 @@ export default function LoginPage() {
     validationSchema: loginValidationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const response = await axiosInstance.post("/auth/login", values);
+        await axiosInstance.post("/auth/login", values);
         
         addNotification({
           type: 'success',
@@ -44,7 +43,7 @@ export default function LoginPage() {
 
         addNotification({
           type: 'error',
-          message: `Lỗi đăng nhập: ${errorMessage}`,
+          message: 'Lỗi đăng nhập: ' + errorMessage,
           duration: 5000
         });
       } finally {
@@ -279,4 +278,3 @@ export default function LoginPage() {
     </div>
   );
 }
-```
