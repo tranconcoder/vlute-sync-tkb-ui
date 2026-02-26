@@ -37,7 +37,7 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       const response = await axiosInstance.post("/auth/login", credentials);
-      return response.data as UserInfo;
+      return response.data.data as UserInfo;
     } catch (error: any) {
       const message =
         error.response?.data?.message || "Đã có lỗi xảy ra khi đăng nhập.";
@@ -62,7 +62,7 @@ export const fetchCurrentUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get("/auth/me");
-      return response.data as UserInfo;
+      return response.data.data as UserInfo;
     } catch {
       return rejectWithValue("Not authenticated");
     }
